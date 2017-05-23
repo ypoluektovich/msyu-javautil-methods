@@ -4,9 +4,8 @@ plugins {
     id "com.jfrog.bintray" version "1.6"
 }
 
-ext.pkgname = 'msyu-javautil-methods'
 group = 'org.msyu.javautil'
-version = '0.1.0'
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -19,7 +18,6 @@ publishing {
     publications {
         main(MavenPublication) {
             from components.java
-            artifactId pkgname
 
             artifact sourceJar {
                 classifier "sources"
@@ -36,7 +34,7 @@ bintray {
     publish = false
     pkg {
         repo = 'msyu'
-        name = pkgname
+        name = 'msyu-javautil-methods'
         desc = 'Utilities related to Java method reflection'
         websiteUrl = 'https://github.com/ypoluektovich/msyu-javautil-methods'
         issueTrackerUrl = 'https://github.com/ypoluektovich/msyu-javautil-methods/issues'
