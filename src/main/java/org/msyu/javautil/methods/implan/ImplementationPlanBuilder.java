@@ -7,34 +7,34 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public final class ImplementationPlanBuilder {
+public final class ImplementationPlanBuilder<M extends MethodAccessor> {
 
-	public static InterfacePlan planFor(Collection<InterfaceAccessor> accessors) {
+	public static <M extends MethodAccessor> InterfacePlan<M> planFor(Collection<InterfaceAccessor<M>> accessors) {
 		Objects.requireNonNull(accessors);
 		if (accessors.isEmpty()) {
 			throw new IllegalArgumentException("no interfaces");
 		}
-		InterfaceAccessor rootAccessor;
+		InterfaceAccessor<M> rootAccessor;
 		if (accessors.size() == 1) {
 			rootAccessor = accessors.iterator().next();
 		} else {
-			rootAccessor = new InterfaceAccessor.DummyRoot(accessors);
+			rootAccessor = new DummyRootInterfaceAccessor<>(accessors);
 		}
-		ImplementationPlanBuilder builder = new ImplementationPlanBuilder();
+		ImplementationPlanBuilder<M> builder = new ImplementationPlanBuilder<>();
 		builder.planFor(rootAccessor);
 		return builder.planByIface.get(rootAccessor);
 	}
 
 
-	private final Map<InterfaceAccessor, InterfacePlan> planByIface = new HashMap<>();
+	private final Map<InterfaceAccessor, InterfacePlan<M>> planByIface = new HashMap<>();
 
-	private InterfacePlan planFor(InterfaceAccessor iface) {
-		InterfacePlan plan = planByIface.get(iface);
+	private InterfacePlan<M> planFor(InterfaceAccessor<M> iface) {
+		InterfacePlan<M> plan = planByIface.get(iface);
 		if (plan != null) {
 			return plan;
 		}
 
-		Map<MethodSignature, MethodPlan.Builder> builderByMethod = new HashMap<>();
+		Map<MethodSignature, MethodPlan.Builder<M>> builderByMethod = new HashMap<>();
 
 		for (MethodAccessor method : iface.getMethods()) {
 			MethodSignature signature = method.getSignature();
@@ -44,21 +44,21 @@ public final class ImplementationPlanBuilder {
 			}
 		}
 
-		for (InterfaceAccessor superIface : iface.getInterfaces()) {
-			InterfacePlan superPlan = planFor(superIface);
+		for (InterfaceAccessor<M> superIface : iface.getInterfaces()) {
+			InterfacePlan<M> superPlan = planFor(superIface);
 			planByIface.get(superIface);
-			for (MethodPlan methodPlan : superPlan.planByMethod.values()) {
+			for (MethodPlan<M> methodPlan : superPlan.planByMethod.values()) {
 				getBuilder(builderByMethod, methodPlan.signature).witnessSuperPlan(methodPlan);
 			}
 		}
 
-		plan = new InterfacePlan(builderByMethod);
+		plan = new InterfacePlan<>(builderByMethod);
 		planByIface.put(iface, plan);
 		return plan;
 	}
 
-	private static MethodPlan.Builder getBuilder(
-			Map<MethodSignature, MethodPlan.Builder> builderByMethod,
+	private static <M extends MethodAccessor> MethodPlan.Builder<M> getBuilder(
+			Map<MethodSignature, MethodPlan.Builder<M>> builderByMethod,
 			MethodSignature signature
 	) {
 		return builderByMethod.computeIfAbsent(signature, MethodPlan.Builder::new);

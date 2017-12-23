@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 
 import static java.util.Collections.singleton;
 import static org.msyu.javautil.methods.implan.ImplementationPlanBuilder.planFor;
-import static org.msyu.javautil.methods.implan.InterfaceAccessor.reflect;
+import static org.msyu.javautil.methods.implan.ReflectionInterfaceAccessor.reflect;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;

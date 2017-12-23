@@ -11,23 +11,23 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 
-public final class MethodPlan {
+public final class MethodPlan<M extends MethodAccessor> {
 
-	final static class Builder {
+	final static class Builder<M extends MethodAccessor> {
 		private final MethodSignature signature;
-		MethodAccessor overrideAccessor;
-		private final Set<MethodAccessor> superAccessors = new LinkedHashSet<>();
+		M overrideAccessor;
+		private final Set<M> superAccessors = new LinkedHashSet<>();
 
 		Builder(MethodSignature signature) {
 			this.signature = signature;
 		}
 
-		final void witnessSuperPlan(MethodPlan plan) {
+		final void witnessSuperPlan(MethodPlan<M> plan) {
 			superAccessors.addAll(plan.implementations);
 		}
 
-		final MethodPlan build() {
-			return new MethodPlan(
+		final MethodPlan<M> build() {
+			return new MethodPlan<M>(
 					signature,
 					overrideAccessor != null ?
 							singletonList(overrideAccessor) :
@@ -37,9 +37,9 @@ public final class MethodPlan {
 	}
 
 	final MethodSignature signature;
-	final List<MethodAccessor> implementations;
+	final List<M> implementations;
 
-	MethodPlan(MethodSignature signature, Collection<MethodAccessor> implementations) {
+	MethodPlan(MethodSignature signature, Collection<M> implementations) {
 		this.signature = signature;
 		this.implementations = CopyList.immutable(implementations);
 	}
@@ -48,7 +48,7 @@ public final class MethodPlan {
 		return implementations.size() == 1;
 	}
 
-	public final MethodAccessor getTheImplementation() {
+	public final M getTheImplementation() {
 		if (hasOneImplementation()) {
 			return implementations.get(0);
 		} else {
@@ -56,7 +56,7 @@ public final class MethodPlan {
 		}
 	}
 
-	public final Optional<MethodAccessor> getTheImplementationIfExists() {
+	public final Optional<M> getTheImplementationIfExists() {
 		return hasOneImplementation() ? Optional.of(implementations.get(0)) : Optional.empty();
 	}
 
@@ -67,7 +67,7 @@ public final class MethodPlan {
 	/**
 	 * Get all topmost implementations.
 	 */
-	public final List<MethodAccessor> getImplementations() {
+	public final List<M> getImplementations() {
 		return implementations;
 	}
 

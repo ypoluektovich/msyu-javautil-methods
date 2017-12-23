@@ -13,7 +13,7 @@ public class ReflectionInterfaceAccessorTest {
 		default void defaultMethod() {}
 	}
 
-	InterfaceAccessor.Reflection accessor = new InterfaceAccessor.Reflection(Iface.class);
+	ReflectionInterfaceAccessor accessor = new ReflectionInterfaceAccessor(Iface.class);
 
 	@Test
 	public void listsNormalMethods() {
