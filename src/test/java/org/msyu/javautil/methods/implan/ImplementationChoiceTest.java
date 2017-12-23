@@ -12,12 +12,11 @@ import static org.msyu.javautil.methods.implan.InterfaceAccessor.reflect;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 public class ImplementationChoiceTest {
 
-	MethodSignature sig;
+	private MethodSignature sig;
 
 	@BeforeMethod
 	public void beforeMethod(Method testMethod) {
@@ -29,16 +28,15 @@ public class ImplementationChoiceTest {
 		default void simpleImplemented() {}
 	}
 
-	InterfacePlan simplePlan = planFor(reflect(singleton(Simple.class)));
+	private InterfacePlan simplePlan = planFor(reflect(singleton(Simple.class)));
 
 	@Test
 	public void simpleUnimplemented() {
 		MethodPlan m = simplePlan.getPlanFor(sig);
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
-		assertNull(m.chosenIface);
-		assertFalse(m.definedIn.isEmpty());
-		assertTrue(m.implementedIn.isEmpty());
+		assertFalse(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -46,9 +44,8 @@ public class ImplementationChoiceTest {
 		MethodPlan m = simplePlan.getPlanFor(sig);
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
-		assertNotNull(m.chosenIface);
-		assertFalse(m.definedIn.isEmpty());
-		assertFalse(m.implementedIn.isEmpty());
+		assertTrue(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 
@@ -74,7 +71,7 @@ public class ImplementationChoiceTest {
 		default void i0d1i2() {}
 	}
 
-	InterfacePlan inheritancePlan = planFor(reflect(singleton(I0.class)));
+	private InterfacePlan inheritancePlan = planFor(reflect(singleton(I0.class)));
 
 	@Test
 	public void d0() {
@@ -82,9 +79,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNull(m.chosenIface);
-		assertEquals(m.definedIn.size(), 1);
-		assertEquals(m.implementedIn.size(), 0);
+		assertFalse(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -93,9 +89,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNull(m.chosenIface);
-		assertEquals(m.definedIn.size(), 2);
-		assertEquals(m.implementedIn.size(), 0);
+		assertFalse(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -104,9 +99,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNull(m.chosenIface);
-		assertEquals(m.definedIn.size(), 3);
-		assertEquals(m.implementedIn.size(), 0);
+		assertFalse(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -115,9 +109,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNotNull(m.chosenIface);
-		assertEquals(m.definedIn.size(), 1);
-		assertEquals(m.implementedIn.size(), 1);
+		assertTrue(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -126,10 +119,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNotNull(m.chosenIface);
-		assertTrue(m.chosenIface.getName().endsWith("I0"));
-		assertEquals(m.definedIn.size(), 3);
-		assertEquals(m.implementedIn.size(), 2);
+		assertTrue(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -138,9 +129,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNull(m.chosenIface);
-		assertEquals(m.definedIn.size(), 1);
-		assertEquals(m.implementedIn.size(), 0);
+		assertFalse(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 	@Test
@@ -149,9 +139,8 @@ public class ImplementationChoiceTest {
 		assertNotNull(m);
 		assertEquals(m.signature, sig);
 
-		assertNull(m.chosenIface);
-		assertEquals(m.definedIn.size(), 2);
-		assertEquals(m.implementedIn.size(), 0);
+		assertFalse(m.hasOneImplementation());
+		assertFalse(m.hasImplementationConflict());
 	}
 
 }

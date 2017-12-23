@@ -28,31 +28,40 @@ public final class ImplementationPlanBuilder {
 
 	private final Map<InterfaceAccessor, InterfacePlan> planByIface = new HashMap<>();
 
-	private void planFor(InterfaceAccessor iface) {
-		if (planByIface.containsKey(iface)) {
-			return;
+	private InterfacePlan planFor(InterfaceAccessor iface) {
+		InterfacePlan plan = planByIface.get(iface);
+		if (plan != null) {
+			return plan;
 		}
 
-		for (InterfaceAccessor child : iface.getInterfaces()) {
-			planFor(child);
-		}
-
-		Map<MethodSignature, MethodPlan> planByMethod = new HashMap<>();
+		Map<MethodSignature, MethodPlan.Builder> builderByMethod = new HashMap<>();
 
 		for (MethodAccessor method : iface.getMethods()) {
 			MethodSignature signature = method.getSignature();
-			planByMethod.put(signature, new MethodPlan(signature, iface, method.hasImplementation()));
-		}
-
-		for (InterfaceAccessor superIface : iface.getInterfaces()) {
-			InterfacePlan superPlan = planByIface.get(superIface);
-			for (MethodPlan methodPlan : superPlan.planByMethod.values()) {
-				MethodSignature signature = methodPlan.signature;
-				planByMethod.put(signature, MethodPlan.merge(signature, planByMethod.get(signature), methodPlan, iface));
+			MethodPlan.Builder builder = getBuilder(builderByMethod, signature);
+			if (method.hasImplementation()) {
+				builder.overrideAccessor = method;
 			}
 		}
 
-		planByIface.put(iface, new InterfacePlan(planByMethod));
+		for (InterfaceAccessor superIface : iface.getInterfaces()) {
+			InterfacePlan superPlan = planFor(superIface);
+			planByIface.get(superIface);
+			for (MethodPlan methodPlan : superPlan.planByMethod.values()) {
+				getBuilder(builderByMethod, methodPlan.signature).witnessSuperPlan(methodPlan);
+			}
+		}
+
+		plan = new InterfacePlan(builderByMethod);
+		planByIface.put(iface, plan);
+		return plan;
+	}
+
+	private static MethodPlan.Builder getBuilder(
+			Map<MethodSignature, MethodPlan.Builder> builderByMethod,
+			MethodSignature signature
+	) {
+		return builderByMethod.computeIfAbsent(signature, MethodPlan.Builder::new);
 	}
 
 }

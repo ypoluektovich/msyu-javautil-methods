@@ -5,16 +5,18 @@ plugins {
 }
 
 group = 'org.msyu.javautil'
-version = '1.1.0-rc.1'
+version = '1.1.0-rc.2'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
     jcenter()
+	maven { url 'http://dl.bintray.com/ypoluektovich/msyu' }
 }
 
 dependencies {
+	compile 'org.msyu.javautil:cf:0.1.+'
     testCompile 'org.testng:testng:6.+'
 }
 
