@@ -22,4 +22,8 @@ public final class InterfacePlan<M extends MethodAccessor> {
 		return planByMethod.values();
 	}
 
+	public final boolean hasImplementationConflicts() {
+		return planByMethod.values().stream().anyMatch(MethodPlan::hasImplementationConflict);
+	}
+
 }
