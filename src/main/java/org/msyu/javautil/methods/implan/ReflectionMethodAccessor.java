@@ -52,6 +52,11 @@ public final class ReflectionMethodAccessor implements MethodAccessor {
 
 	/**
 	 * Invokes the represented method without virtual dispatch.
+	 *
+	 * @return the result of the invocation.
+	 *
+	 * @throws InvocationTargetException if the underlying method throws.
+	 * @throws RuntimeException if an exception occurs when trying to invoke the underlying method.
 	 */
 	public Object invokeDirectly(Object target, Object... args) throws InvocationTargetException {
 		// todo: optimize and/or expose facilities for user-side optimizations

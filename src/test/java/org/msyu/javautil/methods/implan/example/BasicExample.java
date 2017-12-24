@@ -54,8 +54,7 @@ public class BasicExample {
 		assertEquals(impl.a("string"), "string");
 		assertEquals(impl.b("string"), System.identityHashCode("string"));
 		assertThrows(UnsupportedOperationException.class, impl::c);
-		RuntimeException runtimeException = expectThrows(RuntimeException.class, impl::d);
-		assertEquals(runtimeException.getMessage(), "dead");
+		assertEquals(expectThrows(RuntimeException.class, impl::d).getMessage(), "dead");
 	}
 
 }
