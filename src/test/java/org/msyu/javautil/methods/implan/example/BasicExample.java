@@ -9,9 +9,7 @@ import org.testng.annotations.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
-import static java.util.Collections.singletonList;
 import static org.msyu.javautil.methods.implan.ImplementationPlanBuilder.planFor;
-import static org.msyu.javautil.methods.implan.ReflectionInterfaceAccessor.reflect;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.expectThrows;
@@ -31,7 +29,7 @@ public class BasicExample {
 
 	@Test
 	public void test() {
-		InterfacePlan<ReflectionMethodAccessor> ifacePlan = planFor(reflect(singletonList(I.class)));
+		InterfacePlan<ReflectionMethodAccessor> ifacePlan = planFor(I.class);
 		I impl = (I) Proxy.newProxyInstance(
 				BasicExample.class.getClassLoader(),
 				new Class[]{I.class},

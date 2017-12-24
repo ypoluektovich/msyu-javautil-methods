@@ -7,7 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Collections.singletonList;
+import static org.msyu.javautil.methods.implan.ReflectionInterfaceAccessor.reflect;
+
 public final class ImplementationPlanBuilder<M extends MethodAccessor> {
+
+	public static InterfacePlan<ReflectionMethodAccessor> planFor(Class<?> iface) {
+		return planFor(reflect(singletonList(iface)));
+	}
 
 	public static <M extends MethodAccessor> InterfacePlan<M> planFor(Collection<InterfaceAccessor<M>> accessors) {
 		Objects.requireNonNull(accessors);

@@ -6,9 +6,7 @@ import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 
-import static java.util.Collections.singleton;
 import static org.msyu.javautil.methods.implan.ImplementationPlanBuilder.planFor;
-import static org.msyu.javautil.methods.implan.ReflectionInterfaceAccessor.reflect;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -28,7 +26,7 @@ public class ImplementationChoiceTest {
 		default void simpleImplemented() {}
 	}
 
-	private InterfacePlan simplePlan = planFor(reflect(singleton(Simple.class)));
+	private InterfacePlan simplePlan = planFor(Simple.class);
 
 	@Test
 	public void simpleUnimplemented() {
@@ -71,7 +69,7 @@ public class ImplementationChoiceTest {
 		default void i0d1i2() {}
 	}
 
-	private InterfacePlan inheritancePlan = planFor(reflect(singleton(I0.class)));
+	private InterfacePlan inheritancePlan = planFor(I0.class);
 
 	@Test
 	public void d0() {
